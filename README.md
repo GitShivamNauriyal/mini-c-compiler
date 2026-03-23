@@ -1,0 +1,2 @@
+- This is a mini C compiler.
+- Works of a subset of C programming language syntax.

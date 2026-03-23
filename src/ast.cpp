@@ -22,6 +22,12 @@ void DeclarationNode::print(int indent) const
     std::string typeStr = (type == TYPE_INT) ? "int" : (type == TYPE_FLOAT) ? "float"
                                                                             : "char";
     std::cout << getIndent(indent) << "Declaration: " << typeStr << " " << identifier << "\n";
+
+    if (initialization)
+    {
+        std::cout << getIndent(indent) << " Initialized to:\n";
+        initialization->print(indent + 2);
+    }
 }
 
 void VariableNode::print(int indent) const

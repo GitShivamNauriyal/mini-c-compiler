@@ -72,7 +72,12 @@ statement:
 declaration:
     type IDENTIFIER {
         $$ = new DeclarationNode((DataType)$1, $2);
-        free($2); // Free the memory allocated by strdup in lexer.l
+        free($2);
+    }
+    | type IDENTIFIER ASSIGN expression {
+        // NEW RULE: Handles 'int z = 10;'
+        $$ = new DeclarationNode((DataType)$1, $2, std::shared_ptr<ASTNode>($4));
+        free($2);
     }
     ;
 

@@ -37,8 +37,10 @@ class DeclarationNode : public ASTNode
 public:
     DataType type;
     std::string identifier;
+    ASTNodePtr initialization;
 
-    DeclarationNode(DataType t, const std::string &id) : type(t), identifier(id) {}
+    DeclarationNode(DataType t, const std::string &id, ASTNodePtr init = nullptr)
+        : type(t), identifier(id), initialization(init) {}
     void print(int indent = 0) const override;
 };
 

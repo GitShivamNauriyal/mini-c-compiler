@@ -85,13 +85,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 12 "src/parser.y"
+#line 18 "src/parser.y"
 
     int ival;
     float fval;
     char* sval;
+    class ASTNode* node; // Raw pointer for Bison's C-based union
 
-#line 95 "parser.tab.h"
+#line 96 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -71,14 +71,19 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+#include "ast.h"
+#include "symbol_table.h"
 
 extern int yylex();
 extern int line_num;
 extern char* yytext;
-
 void yyerror(const char* s);
 
-#line 82 "parser.tab.c"
+// This global pointer will hold the very top of our completed syntax trees
+ASTNodePtr ast_root = nullptr; 
+
+#line 87 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -531,9 +536,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    35,    35,    39,    40,    44,    45,    46,    47,    48,
-      52,    56,    56,    56,    60,    64,    65,    69,    73,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87
+       0,    45,    45,    52,    58,    65,    66,    67,    68,    69,
+      73,    80,    81,    82,    86,    93,    96,   102,   108,   114,
+     115,   116,   117,   118,   119,   120,   121,   122,   126,   127
 };
 #endif
 
@@ -1145,13 +1150,203 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: statements  */
-#line 35 "src/parser.y"
-               { std::cout << "\n[SUCCESS] Syntax Analysis: Parsing completed without errors!\n"; }
-#line 1151 "parser.tab.c"
+#line 45 "src/parser.y"
+               { 
+        // When the entire file is parsed, save the root block to our global variable
+        ast_root = std::shared_ptr<ASTNode>((yyvsp[0].node)); 
+    }
+#line 1159 "parser.tab.c"
+    break;
+
+  case 3: /* statements: statements statement  */
+#line 52 "src/parser.y"
+                         {
+        // Cast the existing block and add the new statement to it
+        BlockNode* block = (BlockNode*)(yyvsp[-1].node);
+        if ((yyvsp[0].node)) block->addStatement(std::shared_ptr<ASTNode>((yyvsp[0].node)));
+        (yyval.node) = block;
+    }
+#line 1170 "parser.tab.c"
+    break;
+
+  case 4: /* statements: %empty  */
+#line 58 "src/parser.y"
+                  {
+        // Create a new empty block when starting a scope
+        (yyval.node) = new BlockNode();
+    }
+#line 1179 "parser.tab.c"
+    break;
+
+  case 5: /* statement: declaration SEMICOLON  */
+#line 65 "src/parser.y"
+                          { (yyval.node) = (yyvsp[-1].node); }
+#line 1185 "parser.tab.c"
+    break;
+
+  case 6: /* statement: assignment_expr SEMICOLON  */
+#line 66 "src/parser.y"
+                                { (yyval.node) = (yyvsp[-1].node); }
+#line 1191 "parser.tab.c"
+    break;
+
+  case 7: /* statement: if_statement  */
+#line 67 "src/parser.y"
+                   { (yyval.node) = (yyvsp[0].node); }
+#line 1197 "parser.tab.c"
+    break;
+
+  case 8: /* statement: while_statement  */
+#line 68 "src/parser.y"
+                      { (yyval.node) = (yyvsp[0].node); }
+#line 1203 "parser.tab.c"
+    break;
+
+  case 9: /* statement: for_statement  */
+#line 69 "src/parser.y"
+                    { (yyval.node) = (yyvsp[0].node); }
+#line 1209 "parser.tab.c"
+    break;
+
+  case 10: /* declaration: type IDENTIFIER  */
+#line 73 "src/parser.y"
+                    {
+        (yyval.node) = new DeclarationNode((DataType)(yyvsp[-1].ival), (yyvsp[0].sval));
+        free((yyvsp[0].sval)); // Free the memory allocated by strdup in lexer.l
+    }
+#line 1218 "parser.tab.c"
+    break;
+
+  case 11: /* type: INT  */
+#line 80 "src/parser.y"
+        { (yyval.ival) = TYPE_INT; }
+#line 1224 "parser.tab.c"
+    break;
+
+  case 12: /* type: FLOAT  */
+#line 81 "src/parser.y"
+            { (yyval.ival) = TYPE_FLOAT; }
+#line 1230 "parser.tab.c"
+    break;
+
+  case 13: /* type: CHAR  */
+#line 82 "src/parser.y"
+           { (yyval.ival) = TYPE_CHAR; }
+#line 1236 "parser.tab.c"
+    break;
+
+  case 14: /* assignment_expr: IDENTIFIER ASSIGN expression  */
+#line 86 "src/parser.y"
+                                 {
+        (yyval.node) = new AssignmentNode((yyvsp[-2].sval), std::shared_ptr<ASTNode>((yyvsp[0].node)));
+        free((yyvsp[-2].sval));
+    }
+#line 1245 "parser.tab.c"
+    break;
+
+  case 15: /* if_statement: IF LPAREN expression RPAREN LBRACE statements RBRACE  */
+#line 93 "src/parser.y"
+                                                         {
+        (yyval.node) = new IfNode(std::shared_ptr<ASTNode>((yyvsp[-4].node)), std::shared_ptr<ASTNode>((yyvsp[-1].node)));
+    }
+#line 1253 "parser.tab.c"
+    break;
+
+  case 16: /* if_statement: IF LPAREN expression RPAREN LBRACE statements RBRACE ELSE LBRACE statements RBRACE  */
+#line 96 "src/parser.y"
+                                                                                         {
+        (yyval.node) = new IfNode(std::shared_ptr<ASTNode>((yyvsp[-8].node)), std::shared_ptr<ASTNode>((yyvsp[-5].node)), std::shared_ptr<ASTNode>((yyvsp[-1].node)));
+    }
+#line 1261 "parser.tab.c"
+    break;
+
+  case 17: /* while_statement: WHILE LPAREN expression RPAREN LBRACE statements RBRACE  */
+#line 102 "src/parser.y"
+                                                            {
+        (yyval.node) = new WhileNode(std::shared_ptr<ASTNode>((yyvsp[-4].node)), std::shared_ptr<ASTNode>((yyvsp[-1].node)));
+    }
+#line 1269 "parser.tab.c"
+    break;
+
+  case 18: /* for_statement: FOR LPAREN assignment_expr SEMICOLON expression SEMICOLON assignment_expr RPAREN LBRACE statements RBRACE  */
+#line 108 "src/parser.y"
+                                                                                                              {
+        (yyval.node) = new ForNode(std::shared_ptr<ASTNode>((yyvsp[-8].node)), std::shared_ptr<ASTNode>((yyvsp[-6].node)), std::shared_ptr<ASTNode>((yyvsp[-4].node)), std::shared_ptr<ASTNode>((yyvsp[-1].node)));
+    }
+#line 1277 "parser.tab.c"
+    break;
+
+  case 19: /* expression: expression PLUS expression  */
+#line 114 "src/parser.y"
+                               { (yyval.node) = new BinaryOpNode("+", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1283 "parser.tab.c"
+    break;
+
+  case 20: /* expression: expression MINUS expression  */
+#line 115 "src/parser.y"
+                                  { (yyval.node) = new BinaryOpNode("-", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1289 "parser.tab.c"
+    break;
+
+  case 21: /* expression: expression MULTIPLY expression  */
+#line 116 "src/parser.y"
+                                     { (yyval.node) = new BinaryOpNode("*", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1295 "parser.tab.c"
+    break;
+
+  case 22: /* expression: expression DIVIDE expression  */
+#line 117 "src/parser.y"
+                                   { (yyval.node) = new BinaryOpNode("/", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1301 "parser.tab.c"
+    break;
+
+  case 23: /* expression: expression EQ expression  */
+#line 118 "src/parser.y"
+                               { (yyval.node) = new BinaryOpNode("==", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1307 "parser.tab.c"
+    break;
+
+  case 24: /* expression: expression LESS expression  */
+#line 119 "src/parser.y"
+                                 { (yyval.node) = new BinaryOpNode("<", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1313 "parser.tab.c"
+    break;
+
+  case 25: /* expression: expression GREATER expression  */
+#line 120 "src/parser.y"
+                                    { (yyval.node) = new BinaryOpNode(">", std::shared_ptr<ASTNode>((yyvsp[-2].node)), std::shared_ptr<ASTNode>((yyvsp[0].node))); }
+#line 1319 "parser.tab.c"
+    break;
+
+  case 26: /* expression: LPAREN expression RPAREN  */
+#line 121 "src/parser.y"
+                               { (yyval.node) = (yyvsp[-1].node); }
+#line 1325 "parser.tab.c"
+    break;
+
+  case 27: /* expression: IDENTIFIER  */
+#line 122 "src/parser.y"
+                 { 
+        (yyval.node) = new VariableNode((yyvsp[0].sval)); 
+        free((yyvsp[0].sval)); 
+    }
+#line 1334 "parser.tab.c"
+    break;
+
+  case 28: /* expression: INT_LITERAL  */
+#line 126 "src/parser.y"
+                  { (yyval.node) = new NumberNode(std::to_string((yyvsp[0].ival)), false); }
+#line 1340 "parser.tab.c"
+    break;
+
+  case 29: /* expression: FLOAT_LITERAL  */
+#line 127 "src/parser.y"
+                    { (yyval.node) = new NumberNode(std::to_string((yyvsp[0].fval)), true); }
+#line 1346 "parser.tab.c"
     break;
 
 
-#line 1155 "parser.tab.c"
+#line 1350 "parser.tab.c"
 
       default: break;
     }
@@ -1344,9 +1539,8 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 90 "src/parser.y"
+#line 130 "src/parser.y"
 
-/* --- C++ CODE INJECTION --- */
 
 void yyerror(const char* s) {
     std::cerr << "\n[ERROR] Syntax Error at line " << line_num << ": " << s << " near '" << yytext << "'\n";

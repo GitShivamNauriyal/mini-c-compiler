@@ -872,7 +872,7 @@ case 21:
 YY_RULE_SETUP
 #line 47 "src/lexer.l"
 { 
-                /* yylval.ival = atoi(yytext); // Will pass the actual number to Bison later */
+                yylval.ival = std::atoi(yytext);
                 return INT_LITERAL; 
               }
 	YY_BREAK
@@ -880,7 +880,7 @@ case 22:
 YY_RULE_SETUP
 #line 52 "src/lexer.l"
 { 
-                /* yylval.fval = atof(yytext); // Will pass the actual float to Bison later */
+                yylval.fval = std::atof(yytext);
                 return FLOAT_LITERAL; 
               }
 	YY_BREAK
@@ -888,7 +888,7 @@ case 23:
 YY_RULE_SETUP
 #line 57 "src/lexer.l"
 { 
-                /* yylval.sval = strdup(yytext); // Passes the variable name */
+                yylval.sval = strdup(yytext);
                 return IDENTIFIER; 
               }
 	YY_BREAK

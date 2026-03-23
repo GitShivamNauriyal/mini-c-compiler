@@ -1,7 +1,11 @@
 #include <iostream>
+#include <memory>
+#include "ast.h"
 
 extern int yyparse();
 extern FILE *yyin;
+
+extern ASTNodePtr ast_root;
 
 int main(int argc, char **argv)
 {
@@ -14,14 +18,25 @@ int main(int argc, char **argv)
             return 1;
         }
         yyin = file;
-        std::cout << "Compiling file: " << argv[1] << "\n";
+        std::cout << "\n--- Compiling file: " << argv[1] << " ---\n";
+    }
+
+    if (yyparse() == 0)
+    {
+        std::cout << "[SUCCESS] Lexical Analysis completed.\n";
+        std::cout << "[SUCCESS] Syntax Analysis completed.\n";
+
+        if (ast_root)
+        {
+            std::cout << "\n================ ABSTRACT SYNTAX TREE ================\n";
+            ast_root->print();
+            std::cout << "======================================================\n\n";
+        }
     }
     else
     {
-        std::cout << "Type your Mini C code below (Press Ctrl+D to finish):\n";
+        std::cout << "[FAILED] Compilation halted due to syntax/lexical errors.\n";
     }
-
-    yyparse();
 
     return 0;
 }

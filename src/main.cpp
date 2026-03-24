@@ -1,10 +1,10 @@
 #include <iostream>
 #include <memory>
 #include "ast.h"
+#include "semantic.h"
 
 extern int yyparse();
 extern FILE *yyin;
-
 extern ASTNodePtr ast_root;
 
 int main(int argc, char **argv)
@@ -21,6 +21,7 @@ int main(int argc, char **argv)
         std::cout << "\n--- Compiling file: " << argv[1] << " ---\n";
     }
 
+    // PHASE 1 & 2: Lexical and Syntax Analysis
     if (yyparse() == 0)
     {
         std::cout << "[SUCCESS] Lexical Analysis completed.\n";
@@ -30,12 +31,27 @@ int main(int argc, char **argv)
         {
             std::cout << "\n================ ABSTRACT SYNTAX TREE ================\n";
             ast_root->print();
-            std::cout << "======================================================\n\n";
+            std::cout << "======================================================\n";
+
+            // PHASE 3: Semantic Analysis
+            SemanticAnalyzer semantic_analyzer;
+            if (semantic_analyzer.analyze(ast_root))
+            {
+                std::cout << "\n[SUCCESS] Semantic Analysis completed.\n";
+
+                semantic_analyzer.printSymbolTable();
+
+                std::cout << "--- Compilation Finished Successfully ---\n\n";
+            }
+            else
+            {
+                std::cout << "\n[FAILED] Compilation halted due to semantic errors.\n\n";
+            }
         }
     }
     else
     {
-        std::cout << "[FAILED] Compilation halted due to syntax/lexical errors.\n";
+        std::cout << "[FAILED] Compilation halted due to syntax/lexical errors.\n\n";
     }
 
     return 0;

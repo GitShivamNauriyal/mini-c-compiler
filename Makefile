@@ -13,8 +13,7 @@ SRC_DIR = src
 TARGET = minic
 
 # C++ source files
-CPP_SRCS = $(SRC_DIR)/ast.cpp $(SRC_DIR)/symbol_table.cpp $(SRC_DIR)/semantic.cpp $(SRC_DIR)/codegen.cpp $(SRC_DIR)/main.cpp
-
+CPP_SRCS = $(SRC_DIR)/ast.cpp $(SRC_DIR)/symbol_table.cpp $(SRC_DIR)/semantic.cpp $(SRC_DIR)/main.cpp
 all: $(TARGET)
 
 # Rule to link everything together into the final executable

@@ -44,16 +44,17 @@ sudo apt install flex bison build-essential g++ make
 ```
 
 ### Build Instructions
-* To compile the project and generate the minic executable, run:
-
+ To compile the project and generate the minic executable, run:
 ```Bash
 make 
 ```
-- (To clean up generated C files and the executable, run make clean) -
-
+(To clean up generated C files and the executable, run make clean)
 ### Usage
-* Pass a C file as an argument to the compiler to analyze it:
-
+Pass a C file as an argument to the compiler to analyze it:
 ```Bash
 ./minic tests/test_valid.c
 ```
+
+## 👨‍💻 Author
+* Shivam Nauriyal🗿
+- **shivamnauriyal1224@gmail.com**.

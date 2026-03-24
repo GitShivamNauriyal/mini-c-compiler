@@ -17,4 +17,4 @@ while (x > 0)
     x = x - 1;
 }
 
-int z = 10.0;
+int z = 10;

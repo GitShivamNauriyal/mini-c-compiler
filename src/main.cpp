@@ -2,6 +2,7 @@
 #include <memory>
 #include "ast.h"
 #include "semantic.h"
+#include "codegen.h"
 
 extern int yyparse();
 extern FILE *yyin;
@@ -21,7 +22,6 @@ int main(int argc, char **argv)
         std::cout << "\n--- Compiling file: " << argv[1] << " ---\n";
     }
 
-    // PHASE 1 & 2: Lexical and Syntax Analysis
     if (yyparse() == 0)
     {
         std::cout << "[SUCCESS] Lexical Analysis completed.\n";
@@ -33,13 +33,16 @@ int main(int argc, char **argv)
             ast_root->print();
             std::cout << "======================================================\n";
 
-            // PHASE 3: Semantic Analysis
             SemanticAnalyzer semantic_analyzer;
             if (semantic_analyzer.analyze(ast_root))
             {
                 std::cout << "\n[SUCCESS] Semantic Analysis completed.\n";
-
                 semantic_analyzer.printSymbolTable();
+
+                // PHASE 4: INTERMEDIATE CODE GENERATION
+                std::cout << "[SUCCESS] Generating Intermediate Code...\n";
+                CodeGenerator codegen;
+                codegen.generate(ast_root);
 
                 std::cout << "--- Compilation Finished Successfully ---\n\n";
             }

@@ -67,16 +67,19 @@ extern int yydebug;
     DIVIDE = 268,                  /* DIVIDE  */
     ASSIGN = 269,                  /* ASSIGN  */
     EQ = 270,                      /* EQ  */
-    LESS = 271,                    /* LESS  */
-    GREATER = 272,                 /* GREATER  */
-    LPAREN = 273,                  /* LPAREN  */
-    RPAREN = 274,                  /* RPAREN  */
-    LBRACE = 275,                  /* LBRACE  */
-    RBRACE = 276,                  /* RBRACE  */
-    SEMICOLON = 277,               /* SEMICOLON  */
-    INT_LITERAL = 278,             /* INT_LITERAL  */
-    FLOAT_LITERAL = 279,           /* FLOAT_LITERAL  */
-    IDENTIFIER = 280               /* IDENTIFIER  */
+    NEQ = 271,                     /* NEQ  */
+    LESS = 272,                    /* LESS  */
+    GREATER = 273,                 /* GREATER  */
+    LEQ = 274,                     /* LEQ  */
+    GEQ = 275,                     /* GEQ  */
+    LPAREN = 276,                  /* LPAREN  */
+    RPAREN = 277,                  /* RPAREN  */
+    LBRACE = 278,                  /* LBRACE  */
+    RBRACE = 279,                  /* RBRACE  */
+    SEMICOLON = 280,               /* SEMICOLON  */
+    INT_LITERAL = 281,             /* INT_LITERAL  */
+    FLOAT_LITERAL = 282,           /* FLOAT_LITERAL  */
+    IDENTIFIER = 283               /* IDENTIFIER  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -85,14 +88,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 18 "src/parser.y"
+#line 24 "src/parser.y"
 
     int ival;
     float fval;
     char* sval;
-    class ASTNode* node; // Raw pointer for Bison's C-based union
+    class ASTNode* node; 
 
-#line 96 "parser.tab.h"
+#line 99 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

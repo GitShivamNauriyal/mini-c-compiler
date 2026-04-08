@@ -1,34 +1,34 @@
 #!/bin/bash
 
 # Colors for terminal
-GREEN='\e[1;32m'
-RED='\e[1;31m'
-NC='\e[0m' 
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+NC='\033[0m' 
 
 COMPILER="./minic"
 
 build() {
-    printf "Building minic compiler...\n"
+    echo "Building minic compiler..."
     make
     if [ $? -eq 0 ]; then
-        printf "${GREEN}[SUCCESS]${NC} Build successful!\n"
+        echo -e "${GREEN}[SUCCESS]${NC} Build successful!"
     else
-        printf "${RED}[ERROR]${NC} Build failed!\n"
+        echo -e "${RED}[ERROR]${NC} Build failed!"
         exit 1
     fi
 }
 
 clean() {
-    printf "Cleaning project...\n"
+    echo "Cleaning project..."
     make clean
-    printf "${GREEN}[SUCCESS]${NC} Cleanup complete.\n"
+    echo -e "${GREEN}[SUCCESS]${NC} Cleanup complete."
 }
 
 run_test_dir() {
     local dir=$1
     local expected=$2
-    printf "Running tests in $dir (Expected: $expected)\n"
-    printf "--------------------------------------------------\n"
+    echo "Running tests in $dir (Expected: $expected)"
+    echo "--------------------------------------------------"
     
     for file in "$dir"/*.c; do
         if [ -f "$file" ]; then
@@ -40,18 +40,18 @@ run_test_dir() {
             fi
             
             if [ "$actual" == "$expected" ]; then
-                printf "${GREEN}[PASS]${NC} %s\n" "$file"
+                echo -e "${GREEN}[PASS]${NC} $file"
             else
-                printf "${RED}[FAIL]${NC} %s (Expected %s, got %s)\n" "$file" "$expected" "$actual"
+                echo -e "${RED}[FAIL]${NC} $file (Expected $expected, got $actual)"
             fi
         fi
     done
-    printf "\n"
+    echo ""
 }
 
 run_all_tests() {
     if [ ! -f "$COMPILER" ]; then
-        printf "${RED}[ERROR]${NC} Compiler not found! Build it first.\n"
+        echo -e "${RED}[ERROR]${NC} Compiler not found! Build it first."
         exit 1
     fi
     run_test_dir "tests/valid" "SUCCESS"
@@ -74,12 +74,12 @@ case "$1" in
         if [ -n "$1" ] && [ -f "$1" ]; then
             $COMPILER "$1"
         else
-            printf "Usage: ./run.sh [FLAG | FILE]\n"
-            printf "Flags:\n"
-            printf "  -t, --test    : Run all test cases (Valid & Error)\n"
-            printf "  -b, --build   : Compile and run all tests\n"
-            printf "  -c, --clean   : Clean and recompile only\n"
-            printf "  <file>        : Run compiler on a specific file\n"
+            echo "Usage: ./run.sh [FLAG | FILE]"
+            echo "Flags:"
+            echo "  -t, --test    : Run all test cases (Valid & Error)"
+            echo "  -b, --build   : Compile and run all tests"
+            echo "  -c, --clean   : Clean and recompile only"
+            echo "  <file>        : Run compiler on a specific file"
         fi
         ;;
 esac

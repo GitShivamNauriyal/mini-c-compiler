@@ -29,7 +29,7 @@ ASTNodePtr ast_root = nullptr;
 }
 
 %token INT FLOAT CHAR IF ELSE WHILE FOR
-%token PLUS MINUS MULTIPLY DIVIDE ASSIGN EQ LESS GREATER
+%token PLUS MINUS MULTIPLY DIVIDE ASSIGN EQ NEQ LESS GREATER LEQ GEQ
 %token LPAREN RPAREN LBRACE RBRACE SEMICOLON
 
 %token <ival> INT_LITERAL
@@ -40,7 +40,7 @@ ASTNodePtr ast_root = nullptr;
 %type <node> if_statement while_statement for_statement expression
 %type <ival> type
 
-%left LESS GREATER EQ
+%left LESS GREATER EQ NEQ LEQ GEQ
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
 
@@ -122,8 +122,11 @@ expression:
     | expression MULTIPLY expression { $$ = new BinaryOpNode("*", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | expression DIVIDE expression { $$ = new BinaryOpNode("/", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | expression EQ expression { $$ = new BinaryOpNode("==", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
+    | expression NEQ expression { $$ = new BinaryOpNode("!=", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | expression LESS expression { $$ = new BinaryOpNode("<", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | expression GREATER expression { $$ = new BinaryOpNode(">", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
+    | expression LEQ expression { $$ = new BinaryOpNode("<=", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
+    | expression GEQ expression { $$ = new BinaryOpNode(">=", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | LPAREN expression RPAREN { $$ = $2; }
     | IDENTIFIER { 
         $$ = new VariableNode($1); 

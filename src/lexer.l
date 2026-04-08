@@ -43,8 +43,11 @@ FLOAT_CONST {DIGIT}+"."{DIGIT}+
 "/"         { return DIVIDE; }
 "="         { return ASSIGN; }
 "=="        { return EQ; }
+"!="        { return NEQ; }
 "<"         { return LESS; }
 ">"         { return GREATER; }
+"<="        { return LEQ; }
+">="        { return GEQ; }
 "("         { return LPAREN; }
 ")"         { return RPAREN; }
 "{"         { return LBRACE; }

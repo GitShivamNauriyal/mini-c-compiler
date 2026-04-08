@@ -39,7 +39,7 @@ int main(int argc, char **argv)
                 std::cout << "\n[SUCCESS] Semantic Analysis completed.\n";
                 semantic_analyzer.printSymbolTable();
 
-                // PHASE 4: INTERMEDIATE CODE GENERATION
+                // INTERMEDIATE CODE GENERATION
                 std::cout << "[SUCCESS] Generating Intermediate Code...\n";
                 CodeGenerator codegen;
                 codegen.generate(ast_root);

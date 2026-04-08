@@ -771,37 +771,37 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 25 "src/lexer.l"
-{ return 258; }
+{ return INT; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 26 "src/lexer.l"
-{ return 259; }
+{ return FLOAT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 27 "src/lexer.l"
-{ return 260; }
+{ return CHAR; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 28 "src/lexer.l"
-{ return 261; }
+{ return IF; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 29 "src/lexer.l"
-{ return 262; }
+{ return ELSE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 30 "src/lexer.l"
-{ return 263; }
+{ return WHILE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 31 "src/lexer.l"
-{ return 264; }
+{ return FOR; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP

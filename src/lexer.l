@@ -22,13 +22,13 @@ FLOAT_CONST {DIGIT}+"."{DIGIT}+
 
 %%
 
-"int"       { return 258; }
-"float"     { return 259; }
-"char"      { return 260; }
-"if"        { return 261; }
-"else"      { return 262; }
-"while"     { return 263; }
-"for"       { return 264; }
+"int"       { return INT; }
+"float"     { return FLOAT; }
+"char"      { return CHAR; }
+"if"        { return IF; }
+"else"      { return ELSE; }
+"while"     { return WHILE; }
+"for"       { return FOR; }
 
 "+"         { return PLUS; }
 "-"         { return MINUS; }

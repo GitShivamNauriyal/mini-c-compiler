@@ -45,6 +45,19 @@ DataType SemanticAnalyzer::getExprType(ASTNodePtr expr)
     return TYPE_UNKNOWN;
 }
 
+bool isCompatible(DataType target, DataType source)
+{
+    if (target == source)
+        return true;
+    if (target == TYPE_FLOAT && source == TYPE_INT)
+        return true;
+    if (target == TYPE_INT && source == TYPE_CHAR)
+        return true;
+    if (target == TYPE_CHAR && source == TYPE_INT)
+        return true;
+    return false;
+}
+
 void SemanticAnalyzer::visit(ASTNodePtr node)
 {
     if (!node)
@@ -70,7 +83,7 @@ void SemanticAnalyzer::visit(ASTNodePtr node)
         {
             visit(decl->initialization);
             DataType initType = getExprType(decl->initialization);
-            if (initType != TYPE_UNKNOWN && initType != decl->type)
+            if (initType != TYPE_UNKNOWN && !isCompatible(decl->type, initType))
             {
                 reportError("Type mismatch in initialization of '" + decl->identifier + "'.");
             }
@@ -88,7 +101,7 @@ void SemanticAnalyzer::visit(ASTNodePtr node)
         else
         {
             DataType exprType = getExprType(assign->expression);
-            if (exprType != TYPE_UNKNOWN && exprType != info->type)
+            if (exprType != TYPE_UNKNOWN && !isCompatible(info->type, exprType))
             {
                 reportError("Type mismatch: Cannot assign to '" + assign->identifier + "'.");
             }

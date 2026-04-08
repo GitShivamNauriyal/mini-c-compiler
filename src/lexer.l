@@ -6,6 +6,13 @@
 #include "parser.tab.h"
 
 int line_num = 1;
+
+/**
+ * @file lexer.l
+ * @brief Lexical analyzer for the Mini-C compiler.
+ * 
+ * Defines tokens for keywords, operators, identifiers, and literals using Flex.
+ */
 %}
 
 /* Regular Definitions */

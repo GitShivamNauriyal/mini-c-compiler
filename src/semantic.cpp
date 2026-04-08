@@ -1,12 +1,23 @@
 #include "../include/semantic.h"
 #include <iostream>
 
+/**
+ * @brief Reports a semantic error to the console and sets the error flag.
+ * 
+ * @param message The error message to display.
+ */
 void SemanticAnalyzer::reportError(const std::string &message)
 {
     std::cerr << "[ERROR] Semantic Error: " << message << "\n";
     hasError = true;
 }
 
+/**
+ * @brief Entry point for semantic analysis on the AST.
+ * 
+ * @param root Shared pointer to the root of the AST.
+ * @return bool True if analysis succeeded without errors, false otherwise.
+ */
 bool SemanticAnalyzer::analyze(ASTNodePtr root)
 {
     hasError = false;
@@ -14,6 +25,14 @@ bool SemanticAnalyzer::analyze(ASTNodePtr root)
     return !hasError;
 }
 
+/**
+ * @brief Determines the data type of an expression node.
+ * 
+ * Performs recursive type checking and lookups variables in the symbol table.
+ * 
+ * @param expr Shared pointer to the expression AST node.
+ * @return DataType The resolved data type (INT, FLOAT, CHAR, or UNKNOWN).
+ */
 DataType SemanticAnalyzer::getExprType(ASTNodePtr expr)
 {
     if (!expr)
@@ -45,6 +64,13 @@ DataType SemanticAnalyzer::getExprType(ASTNodePtr expr)
     return TYPE_UNKNOWN;
 }
 
+/**
+ * @brief Checks if a source type can be implicitly converted to a target type.
+ * 
+ * @param target The expected data type.
+ * @param source The actual data type of the expression.
+ * @return bool True if compatible, false otherwise.
+ */
 bool isCompatible(DataType target, DataType source)
 {
     if (target == source)
@@ -58,6 +84,13 @@ bool isCompatible(DataType target, DataType source)
     return false;
 }
 
+/**
+ * @brief Recursively traverses the AST to perform semantic checks.
+ * 
+ * Handles declarations, assignments, and control flow structures.
+ * 
+ * @param node Shared pointer to the current AST node being visited.
+ */
 void SemanticAnalyzer::visit(ASTNodePtr node)
 {
     if (!node)

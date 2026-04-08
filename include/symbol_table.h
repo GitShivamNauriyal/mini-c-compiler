@@ -1,11 +1,10 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
-#include <iostream>
 #include <string>
-#include <unordered_map>
+#include <map>
+#include <vector>
 
-// Enum to represent the supported data types in Mini C
 enum DataType
 {
     TYPE_INT,
@@ -14,26 +13,25 @@ enum DataType
     TYPE_UNKNOWN
 };
 
+std::string typeToString(DataType type);
+
 struct SymbolInfo
 {
     std::string name;
     DataType type;
-    int line_declared;
+    int lineDeclared;
 };
 
 class SymbolTable
 {
 private:
-    std::unordered_map<std::string, SymbolInfo> table;
+    std::map<std::string, SymbolInfo> table;
 
 public:
-    bool insert(const std::string &name, DataType type, int line);
-
-    SymbolInfo *lookup(const std::string &name);
-
     bool exists(const std::string &name);
-
-    void printTable();
+    bool insert(const std::string &name, DataType type, int line);
+    SymbolInfo *lookup(const std::string &name);
+    void print() const;
 };
 
 #endif

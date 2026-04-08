@@ -48,6 +48,8 @@ private:
     void constantPropagation();
     void deadCodeElimination();
     void algebraicSimplification();
+    void commonSubexpressionElimination();
+    void loopOptimization();
 };
 
 #endif

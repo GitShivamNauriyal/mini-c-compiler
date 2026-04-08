@@ -1,16 +1,34 @@
 #include "../include/codegen.h"
 #include <iostream>
 
+/**
+ * @brief Generates a new temporary variable name (e.g., t1, t2).
+ * 
+ * @return std::string The name of the new temporary variable.
+ */
 std::string CodeGenerator::newTemp()
 {
     return "t" + std::to_string(++tempCount);
 }
 
+/**
+ * @brief Generates a new label name (e.g., L1, L2).
+ * 
+ * @return std::string The name of the new label.
+ */
 std::string CodeGenerator::newLabel()
 {
     return "L" + std::to_string(++labelCount);
 }
 
+/**
+ * @brief Main entry point to generate three-address code from the AST.
+ * 
+ * After generation, it invokes the optimizer and prints both the original and 
+ * optimized intermediate code.
+ * 
+ * @param root Shared pointer to the root of the AST.
+ */
 void CodeGenerator::generate(ASTNodePtr root)
 {
     generateStmt(root);
@@ -27,6 +45,14 @@ void CodeGenerator::generate(ASTNodePtr root)
     std::cout << "==============================================================\n\n";
 }
 
+/**
+ * @brief Generates TAC instructions for expression nodes.
+ * 
+ * Recursively processes binary operations and returns the result variable.
+ * 
+ * @param expr Shared pointer to the expression AST node.
+ * @return std::string The variable or constant representing the result of the expression.
+ */
 std::string CodeGenerator::generateExpr(ASTNodePtr expr)
 {
     if (!expr)
@@ -54,6 +80,13 @@ std::string CodeGenerator::generateExpr(ASTNodePtr expr)
     return "";
 }
 
+/**
+ * @brief Generates TAC instructions for statements.
+ * 
+ * Handles declarations, assignments, and complex control structures (if, while, for).
+ * 
+ * @param node Shared pointer to the statement AST node.
+ */
 void CodeGenerator::generateStmt(ASTNodePtr node)
 {
     if (!node)

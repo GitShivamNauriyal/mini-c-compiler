@@ -21,7 +21,7 @@ private:
 public:
     bool analyze(ASTNodePtr root);
 
-    void printSymbolTable() { symTab.printTable(); }
+    void printSymbolTable() { symTab.print(); }
 };
 
 #endif

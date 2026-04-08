@@ -10,16 +10,22 @@ extern int line_num;
 extern char* yytext;
 void yyerror(const char* s);
 
-// This global pointer will hold the very top of our completed syntax trees
+/**
+ * @file parser.y
+ * @brief Syntax analyzer (parser) for the Mini-C compiler.
+ * 
+ * Defines the grammar rules and constructs the Abstract Syntax Tree (AST) using Bison.
+ */
+
+// Global root of the AST
 ASTNodePtr ast_root = nullptr; 
 %}
 
-/* Define the types of data our tokens and rules can return */
 %union {
     int ival;
     float fval;
     char* sval;
-    class ASTNode* node; // Raw pointer for Bison's C-based union
+    class ASTNode* node; 
 }
 
 %token INT FLOAT CHAR IF ELSE WHILE FOR
@@ -30,7 +36,6 @@ ASTNodePtr ast_root = nullptr;
 %token <fval> FLOAT_LITERAL
 %token <sval> IDENTIFIER
 
-/* Link our grammar rules to return ASTNode pointers */
 %type <node> program statements statement declaration assignment_expr 
 %type <node> if_statement while_statement for_statement expression
 %type <ival> type
@@ -43,20 +48,17 @@ ASTNodePtr ast_root = nullptr;
 
 program:
     statements { 
-        // When the entire file is parsed, save the root block to our global variable
         ast_root = std::shared_ptr<ASTNode>($1); 
     }
     ;
 
 statements:
     statements statement {
-        // Cast the existing block and add the new statement to it
         BlockNode* block = (BlockNode*)$1;
         if ($2) block->addStatement(std::shared_ptr<ASTNode>($2));
         $$ = block;
     }
     | /* Empty */ {
-        // Create a new empty block when starting a scope
         $$ = new BlockNode();
     }
     ;
@@ -75,7 +77,6 @@ declaration:
         free($2);
     }
     | type IDENTIFIER ASSIGN expression {
-        // NEW RULE: Handles 'int z = 10;'
         $$ = new DeclarationNode((DataType)$1, $2, std::shared_ptr<ASTNode>($4));
         free($2);
     }
@@ -123,7 +124,7 @@ expression:
     | expression EQ expression { $$ = new BinaryOpNode("==", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | expression LESS expression { $$ = new BinaryOpNode("<", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
     | expression GREATER expression { $$ = new BinaryOpNode(">", std::shared_ptr<ASTNode>($1), std::shared_ptr<ASTNode>($3)); }
-    | LPAREN expression RPAREN { $$ = $2; } // Parentheses don't need a node, they just enforce grouping
+    | LPAREN expression RPAREN { $$ = $2; }
     | IDENTIFIER { 
         $$ = new VariableNode($1); 
         free($1); 
@@ -134,6 +135,11 @@ expression:
 
 %%
 
+/**
+ * @brief Error reporting function for Bison.
+ * 
+ * @param s The error message.
+ */
 void yyerror(const char* s) {
     std::cerr << "\n[ERROR] Syntax Error at line " << line_num << ": " << s << " near '" << yytext << "'\n";
 }

@@ -1,4 +1,4 @@
-#include "symbol_table.h"
+#include "../include/symbol_table.h"
 #include <iomanip> // Needed for formatting the output table cleanly
 
 bool SymbolTable::insert(const std::string &name, DataType type, int line)

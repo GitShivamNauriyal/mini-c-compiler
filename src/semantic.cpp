@@ -1,4 +1,4 @@
-#include "semantic.h"
+#include "../include/semantic.h"
 #include <iostream>
 
 void SemanticAnalyzer::reportError(const std::string &message)

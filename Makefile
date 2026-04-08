@@ -1,6 +1,6 @@
 # Compiler and Flags
 CXX = g++
-CXXFLAGS = -Wall -std=c++17 -g -I$(SRC_DIR)
+CXXFLAGS = -Wall -std=c++17 -g -I$(SRC_DIR) -Iinclude
 
 # Tools
 FLEX = flex
@@ -8,12 +8,13 @@ BISON = bison
 
 # Directories
 SRC_DIR = src
+INC_DIR = include
 
 # The final executable name
 TARGET = minic
 
 # C++ source files
-CPP_SRCS = $(SRC_DIR)/ast.cpp $(SRC_DIR)/symbol_table.cpp $(SRC_DIR)/semantic.cpp $(SRC_DIR)/codegen.cpp $(SRC_DIR)/main.cpp
+CPP_SRCS = $(SRC_DIR)/ast.cpp $(SRC_DIR)/symbol_table.cpp $(SRC_DIR)/semantic.cpp $(SRC_DIR)/codegen.cpp $(SRC_DIR)/optimizer.cpp $(SRC_DIR)/main.cpp
 all: $(TARGET)
 
 # Rule to link everything together into the final executable

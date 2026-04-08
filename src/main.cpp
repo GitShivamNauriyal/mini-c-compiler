@@ -1,8 +1,8 @@
 #include <iostream>
 #include <memory>
-#include "ast.h"
-#include "semantic.h"
-#include "codegen.h"
+#include "../include/ast.h"
+#include "../include/semantic.h"
+#include "../include/codegen.h"
 
 extern int yyparse();
 extern FILE *yyin;

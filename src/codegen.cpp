@@ -1,4 +1,4 @@
-#include "codegen.h"
+#include "../include/codegen.h"
 #include <iostream>
 
 std::string CodeGenerator::newTemp()
@@ -13,9 +13,18 @@ std::string CodeGenerator::newLabel()
 
 void CodeGenerator::generate(ASTNodePtr root)
 {
-    std::cout << "\n================ THREE-ADDRESS CODE ================\n";
     generateStmt(root);
+    
+    std::cout << "\n================ THREE-ADDRESS CODE ================\n";
+    optimizer.print();
     std::cout << "====================================================\n\n";
+
+    std::cout << "[SUCCESS] Optimizing Code...\n";
+    optimizer.optimize();
+
+    std::cout << "================ OPTIMIZED THREE-ADDRESS CODE ================\n";
+    optimizer.print();
+    std::cout << "==============================================================\n\n";
 }
 
 std::string CodeGenerator::generateExpr(ASTNodePtr expr)
@@ -39,7 +48,7 @@ std::string CodeGenerator::generateExpr(ASTNodePtr expr)
 
         // Generate a new temporary variable for the result
         std::string temp = newTemp();
-        std::cout << temp << " = " << left << " " << binOp->op << " " << right << "\n";
+        optimizer.addInstruction(Instruction(temp, binOp->op, left, right));
         return temp;
     }
     return "";
@@ -60,13 +69,13 @@ void CodeGenerator::generateStmt(ASTNodePtr node)
         if (decl->initialization)
         {
             std::string rhs = generateExpr(decl->initialization);
-            std::cout << decl->identifier << " = " << rhs << "\n";
+            optimizer.addInstruction(Instruction(decl->identifier, "=", rhs, ""));
         }
     }
     else if (auto assign = std::dynamic_pointer_cast<AssignmentNode>(node))
     {
         std::string rhs = generateExpr(assign->expression);
-        std::cout << assign->identifier << " = " << rhs << "\n";
+        optimizer.addInstruction(Instruction(assign->identifier, "=", rhs, ""));
     }
     else if (auto ifStmt = std::dynamic_pointer_cast<IfNode>(node))
     {
@@ -74,27 +83,27 @@ void CodeGenerator::generateStmt(ASTNodePtr node)
         std::string labelTrue = newLabel();
         std::string labelEnd = newLabel();
 
-        std::cout << "if " << cond << " goto " << labelTrue << "\n";
+        optimizer.addInstruction(Instruction(labelTrue, "if", cond, ""));
 
         if (ifStmt->elseBlock)
         {
             std::string labelFalse = newLabel();
-            std::cout << "goto " << labelFalse << "\n";
+            optimizer.addInstruction(Instruction(labelFalse, "goto", "", ""));
 
-            std::cout << labelTrue << ":\n";
+            optimizer.addInstruction(Instruction(labelTrue));
             generateStmt(ifStmt->ifBlock);
-            std::cout << "goto " << labelEnd << "\n";
+            optimizer.addInstruction(Instruction(labelEnd, "goto", "", ""));
 
-            std::cout << labelFalse << ":\n";
+            optimizer.addInstruction(Instruction(labelFalse));
             generateStmt(ifStmt->elseBlock);
         }
         else
         {
-            std::cout << "goto " << labelEnd << "\n";
-            std::cout << labelTrue << ":\n";
+            optimizer.addInstruction(Instruction(labelEnd, "goto", "", ""));
+            optimizer.addInstruction(Instruction(labelTrue));
             generateStmt(ifStmt->ifBlock);
         }
-        std::cout << labelEnd << ":\n";
+        optimizer.addInstruction(Instruction(labelEnd));
     }
     else if (auto whileStmt = std::dynamic_pointer_cast<WhileNode>(node))
     {
@@ -102,16 +111,16 @@ void CodeGenerator::generateStmt(ASTNodePtr node)
         std::string labelTrue = newLabel();
         std::string labelEnd = newLabel();
 
-        std::cout << labelStart << ":\n";
+        optimizer.addInstruction(Instruction(labelStart));
         std::string cond = generateExpr(whileStmt->condition);
-        std::cout << "if " << cond << " goto " << labelTrue << "\n";
-        std::cout << "goto " << labelEnd << "\n";
+        optimizer.addInstruction(Instruction(labelTrue, "if", cond, ""));
+        optimizer.addInstruction(Instruction(labelEnd, "goto", "", ""));
 
-        std::cout << labelTrue << ":\n";
+        optimizer.addInstruction(Instruction(labelTrue));
         generateStmt(whileStmt->body);
-        std::cout << "goto " << labelStart << "\n"; // Loop back up
+        optimizer.addInstruction(Instruction(labelStart, "goto", "", "")); // Loop back up
 
-        std::cout << labelEnd << ":\n";
+        optimizer.addInstruction(Instruction(labelEnd));
     }
     else if (auto forStmt = std::dynamic_pointer_cast<ForNode>(node))
     {
@@ -122,16 +131,16 @@ void CodeGenerator::generateStmt(ASTNodePtr node)
         std::string labelTrue = newLabel();
         std::string labelEnd = newLabel();
 
-        std::cout << labelStart << ":\n";
+        optimizer.addInstruction(Instruction(labelStart));
         std::string cond = generateExpr(forStmt->condition);
-        std::cout << "if " << cond << " goto " << labelTrue << "\n";
-        std::cout << "goto " << labelEnd << "\n";
+        optimizer.addInstruction(Instruction(labelTrue, "if", cond, ""));
+        optimizer.addInstruction(Instruction(labelEnd, "goto", "", ""));
 
-        std::cout << labelTrue << ":\n";
+        optimizer.addInstruction(Instruction(labelTrue));
         generateStmt(forStmt->body);
         generateStmt(forStmt->update);
-        std::cout << "goto " << labelStart << "\n";
+        optimizer.addInstruction(Instruction(labelStart, "goto", "", ""));
 
-        std::cout << labelEnd << ":\n";
+        optimizer.addInstruction(Instruction(labelEnd));
     }
 }

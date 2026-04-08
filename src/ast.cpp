@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "../include/ast.h"
 
 // Helper function to quickly generate spaces for tree indentation
 std::string getIndent(int indent)

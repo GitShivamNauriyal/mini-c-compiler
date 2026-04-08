@@ -72,8 +72,8 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include "ast.h"
-#include "symbol_table.h"
+#include "../include/ast.h"
+#include "../include/symbol_table.h"
 
 extern int yylex();
 extern int line_num;

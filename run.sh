@@ -27,12 +27,13 @@ clean() {
 run_test_dir() {
     local dir=$1
     local expected=$2
-    echo "Running tests in $dir (Expected: $expected)"
+    local opt_flag=$3
+    echo "Running tests in $dir (Expected: $expected, Opt: $opt_flag)"
     echo "--------------------------------------------------"
     
     for file in "$dir"/*.c; do
         if [ -f "$file" ]; then
-            $COMPILER "$file" > /tmp/minic_out 2>&1
+            $COMPILER $opt_flag "$file" > /tmp/minic_out 2>&1
             if grep -q "\-\-\- Compilation Finished Successfully \-\-\-" /tmp/minic_out; then
                 actual="SUCCESS"
             else
@@ -54,8 +55,9 @@ run_all_tests() {
         echo -e "${RED}[ERROR]${NC} Compiler not found! Build it first."
         exit 1
     fi
-    run_test_dir "tests/valid" "SUCCESS"
-    run_test_dir "tests/errors" "FAILED"
+    local opt_flag=$1
+    run_test_dir "tests/valid" "SUCCESS" "$opt_flag"
+    run_test_dir "tests/errors" "FAILED" "$opt_flag"
 }
 
 case "$1" in
@@ -65,21 +67,25 @@ case "$1" in
         ;;
     --build|-b)
         build
-        run_all_tests
+        run_all_tests "-O1"
         ;;
     --test|-t)
-        run_all_tests
+        run_all_tests "-O1"
+        ;;
+    --test-no-opt)
+        run_all_tests "-O0"
         ;;
     *)
         if [ -n "$1" ] && [ -f "$1" ]; then
-            $COMPILER "$1"
+            $COMPILER "$@"
         else
             echo "Usage: ./run.sh [FLAG | FILE]"
             echo "Flags:"
-            echo "  -t, --test    : Run all test cases (Valid & Error)"
-            echo "  -b, --build   : Compile and run all tests"
-            echo "  -c, --clean   : Clean and recompile only"
-            echo "  <file>        : Run compiler on a specific file"
+            echo "  -t, --test         : Run all tests with optimization (-O1)"
+            echo "  --test-no-opt      : Run all tests without optimization (-O0)"
+            echo "  -b, --build        : Compile and run all tests"
+            echo "  -c, --clean        : Clean and recompile only"
+            echo "  <file> [opt_flag]  : Run compiler on a specific file (e.g., ./run.sh test.c -O0)"
         fi
         ;;
 esac

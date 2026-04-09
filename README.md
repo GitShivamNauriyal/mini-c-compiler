@@ -13,6 +13,7 @@ The compiler currently scans tokens, validates grammar, constructs an AST, perfo
 * **Semantic Analysis:** Symbol table management, scoping, and type-checking (with support for implicit conversions between `int`, `float`, and `char`).
 * **Intermediate Code Generation:** Translates AST into Three-Address Code (TAC).
 * **Code Optimization:** A multi-pass optimizer that refines the generated IR.
+* **MIPS Assembly Generation:** Translates the (optimized) TAC into MIPS32 assembly.
 
 ### Optimization Techniques
 The compiler implements several IR-level optimizations:
@@ -45,21 +46,20 @@ sudo apt install flex bison build-essential g++ make
 ### Usage (run.sh)
 The `run.sh` script is the primary way to interact with the project. It handles terminal colors and provides several flags:
 
-1. **Build and Test All:** Compiles the project and runs all valid/error test cases.
+1. **Build and Test All:** Compiles the project and runs all valid/error test cases with `-O1`.
    ```bash
    ./run.sh -b
    ```
-2. **Run Tests Only:** Runs all test cases without rebuilding (requires existing build).
-   ```bash
-   ./run.sh -t
-   ```
+2. **Run Tests with Flags:** 
+   - `./run.sh -t`: Runs tests with optimization ON.
+   - `./run.sh --test-no-opt`: Runs tests with optimization OFF.
 3. **Clean and Build:** Performs a fresh cleanup and recompiles the compiler.
    ```bash
    ./run.sh -c
    ```
 4. **Compile a Specific File:** Runs the compiler on a single source file.
    ```bash
-   ./run.sh tests/valid/test1.c
+   ./run.sh tests/valid/test1.c -O0  # Run without optimization
    ```
 
 ## 👨‍💻 Author

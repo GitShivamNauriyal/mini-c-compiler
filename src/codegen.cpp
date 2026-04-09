@@ -1,4 +1,5 @@
 #include "../include/codegen.h"
+#include "../include/mips_gen.h"
 #include <iostream>
 
 /**
@@ -22,14 +23,15 @@ std::string CodeGenerator::newLabel()
 }
 
 /**
- * @brief Main entry point to generate three-address code from the AST.
+ * @brief Main entry point to generate three-address code and MIPS from the AST.
  * 
- * After generation, it invokes the optimizer and prints both the original and 
- * optimized intermediate code.
+ * After generation, it optionally invokes the optimizer and then generates 
+ * MIPS assembly from the final instruction set.
  * 
  * @param root Shared pointer to the root of the AST.
+ * @param optimize Boolean flag to enable/disable optimization passes.
  */
-void CodeGenerator::generate(ASTNodePtr root)
+void CodeGenerator::generate(ASTNodePtr root, bool optimize)
 {
     generateStmt(root);
     
@@ -37,12 +39,18 @@ void CodeGenerator::generate(ASTNodePtr root)
     optimizer.print();
     std::cout << "====================================================\n\n";
 
-    std::cout << "[SUCCESS] Optimizing Code...\n";
-    optimizer.optimize();
+    if (optimize) {
+        std::cout << "[SUCCESS] Optimizing Code...\n";
+        optimizer.optimize();
 
-    std::cout << "================ OPTIMIZED THREE-ADDRESS CODE ================\n";
-    optimizer.print();
-    std::cout << "==============================================================\n\n";
+        std::cout << "================ OPTIMIZED THREE-ADDRESS CODE ================\n";
+        optimizer.print();
+        std::cout << "==============================================================\n\n";
+    }
+
+    // Generate MIPS Assembly from the (possibly optimized) instructions
+    MipsGenerator mips;
+    mips.generate(optimizer.instructions);
 }
 
 /**

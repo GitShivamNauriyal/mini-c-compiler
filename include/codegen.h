@@ -20,7 +20,7 @@ private:
     std::string generateExpr(ASTNodePtr node);
 
 public:
-    void generate(ASTNodePtr root);
+    void generate(ASTNodePtr root, bool optimize = true);
 };
 
 #endif

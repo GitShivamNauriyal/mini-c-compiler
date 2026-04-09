@@ -14,6 +14,7 @@ The compiler currently scans tokens, validates grammar, constructs an AST, perfo
 * **Intermediate Code Generation:** Translates AST into Three-Address Code (TAC).
 * **Code Optimization:** A multi-pass optimizer that refines the generated IR.
 * **MIPS Assembly Generation:** Translates the (optimized) TAC into MIPS32 assembly.
+* **Artifact Generation:** Automatically saves outputs (AST, Symbol Table, TAC, MIPS) into separate files in the `output/` directory.
 
 ### Optimization Techniques
 The compiler implements several IR-level optimizations:
@@ -61,6 +62,14 @@ The `run.sh` script is the primary way to interact with the project. It handles 
    ```bash
    ./run.sh tests/valid/test1.c -O0  # Run without optimization
    ```
+
+## 📂 Output Artifacts
+After a successful compilation, the `output/` directory contains:
+* `ast.txt`: Hierarchical Abstract Syntax Tree.
+* `symbol_table.txt`: Table of all identifiers and their types.
+* `tac.txt`: Raw Three-Address Code.
+* `tac_optimized.txt`: The IR after optimization passes.
+* `mips.asm`: The final MIPS32 assembly code.
 
 ## 👨‍💻 Author
 * 🗿 Shivam Nauriyal

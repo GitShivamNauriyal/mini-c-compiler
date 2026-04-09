@@ -1,0 +1,15 @@
+Block {
+  Declaration: int count
+   Initialized to:
+      Number: 5 (int)
+  Declaration: float weight
+   Initialized to:
+      Number: 150.500000 (float)
+  Assignment: count =
+      Number: 10.500000 (float)
+  Assignment: weight =
+      Variable: count
+  Declaration: int age
+   Initialized to:
+      Number: 25.500000 (float)
+}

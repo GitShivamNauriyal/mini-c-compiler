@@ -3,9 +3,7 @@
 #include <iostream>
 
 /**
- * @brief Generates a new temporary variable name (e.g., t1, t2).
- * 
- * @return std::string The name of the new temporary variable.
+ * @brief Generates a new temporary variable name.
  */
 std::string CodeGenerator::newTemp()
 {
@@ -13,9 +11,7 @@ std::string CodeGenerator::newTemp()
 }
 
 /**
- * @brief Generates a new label name (e.g., L1, L2).
- * 
- * @return std::string The name of the new label.
+ * @brief Generates a new label name.
  */
 std::string CodeGenerator::newLabel()
 {
@@ -24,42 +20,33 @@ std::string CodeGenerator::newLabel()
 
 /**
  * @brief Main entry point to generate three-address code and MIPS from the AST.
- * 
- * After generation, it optionally invokes the optimizer and then generates 
- * MIPS assembly from the final instruction set.
- * 
- * @param root Shared pointer to the root of the AST.
- * @param optimize Boolean flag to enable/disable optimization passes.
  */
-void CodeGenerator::generate(ASTNodePtr root, bool optimize)
+void CodeGenerator::generate(ASTNodePtr root, bool optimize, 
+                              std::ostream& tacOut,
+                              std::ostream& optTacOut,
+                              std::ostream& mipsOut)
 {
     generateStmt(root);
     
-    std::cout << "\n================ THREE-ADDRESS CODE ================\n";
-    optimizer.print();
-    std::cout << "====================================================\n\n";
+    tacOut << "\n================ THREE-ADDRESS CODE ================\n";
+    optimizer.print(tacOut);
+    tacOut << "====================================================\n\n";
 
     if (optimize) {
-        std::cout << "[SUCCESS] Optimizing Code...\n";
         optimizer.optimize();
 
-        std::cout << "================ OPTIMIZED THREE-ADDRESS CODE ================\n";
-        optimizer.print();
-        std::cout << "==============================================================\n\n";
+        optTacOut << "================ OPTIMIZED THREE-ADDRESS CODE ================\n";
+        optimizer.print(optTacOut);
+        optTacOut << "==============================================================\n\n";
     }
 
     // Generate MIPS Assembly from the (possibly optimized) instructions
     MipsGenerator mips;
-    mips.generate(optimizer.instructions);
+    mips.generate(optimizer.instructions, mipsOut);
 }
 
 /**
  * @brief Generates TAC instructions for expression nodes.
- * 
- * Recursively processes binary operations and returns the result variable.
- * 
- * @param expr Shared pointer to the expression AST node.
- * @return std::string The variable or constant representing the result of the expression.
  */
 std::string CodeGenerator::generateExpr(ASTNodePtr expr)
 {
@@ -76,11 +63,9 @@ std::string CodeGenerator::generateExpr(ASTNodePtr expr)
     }
     if (auto binOp = std::dynamic_pointer_cast<BinaryOpNode>(expr))
     {
-        // Evaluate left and right sides recursively
         std::string left = generateExpr(binOp->left);
         std::string right = generateExpr(binOp->right);
 
-        // Generate a new temporary variable for the result
         std::string temp = newTemp();
         optimizer.addInstruction(Instruction(temp, binOp->op, left, right));
         return temp;
@@ -90,10 +75,6 @@ std::string CodeGenerator::generateExpr(ASTNodePtr expr)
 
 /**
  * @brief Generates TAC instructions for statements.
- * 
- * Handles declarations, assignments, and complex control structures (if, while, for).
- * 
- * @param node Shared pointer to the statement AST node.
  */
 void CodeGenerator::generateStmt(ASTNodePtr node)
 {
@@ -159,13 +140,12 @@ void CodeGenerator::generateStmt(ASTNodePtr node)
 
         optimizer.addInstruction(Instruction(labelTrue));
         generateStmt(whileStmt->body);
-        optimizer.addInstruction(Instruction(labelStart, "goto", "", "")); // Loop back up
+        optimizer.addInstruction(Instruction(labelStart, "goto", "", ""));
 
         optimizer.addInstruction(Instruction(labelEnd));
     }
     else if (auto forStmt = std::dynamic_pointer_cast<ForNode>(node))
     {
-        // A for loop is essentially an initialization followed by a while loop
         generateStmt(forStmt->initialization);
 
         std::string labelStart = newLabel();

@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "optimizer.h"
 #include <string>
+#include <iostream>
 
 class CodeGenerator
 {
@@ -20,7 +21,19 @@ private:
     std::string generateExpr(ASTNodePtr node);
 
 public:
-    void generate(ASTNodePtr root, bool optimize = true);
+    /**
+     * @brief Generates TAC and MIPS assembly.
+     * 
+     * @param root AST root.
+     * @param optimize Enable optimization.
+     * @param tacOut Stream for initial TAC.
+     * @param optTacOut Stream for optimized TAC.
+     * @param mipsOut Stream for MIPS assembly.
+     */
+    void generate(ASTNodePtr root, bool optimize = true, 
+                  std::ostream& tacOut = std::cout,
+                  std::ostream& optTacOut = std::cout,
+                  std::ostream& mipsOut = std::cout);
 };
 
 #endif

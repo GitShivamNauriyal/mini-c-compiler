@@ -4,9 +4,6 @@
 
 /**
  * @brief Checks if a symbol exists in the symbol table.
- * 
- * @param name The identifier to look up.
- * @return bool True if the identifier exists, false otherwise.
  */
 bool SymbolTable::exists(const std::string &name)
 {
@@ -15,11 +12,6 @@ bool SymbolTable::exists(const std::string &name)
 
 /**
  * @brief Inserts a new symbol into the table.
- * 
- * @param name The identifier name.
- * @param type The data type (INT, FLOAT, CHAR).
- * @param line The line number where it was declared.
- * @return bool True if insertion succeeded, false if already exists.
  */
 bool SymbolTable::insert(const std::string &name, DataType type, int line)
 {
@@ -30,9 +22,6 @@ bool SymbolTable::insert(const std::string &name, DataType type, int line)
 
 /**
  * @brief Looks up a symbol and returns its information.
- * 
- * @param name The identifier to look up.
- * @return SymbolInfo* Pointer to the symbol info if found, nullptr otherwise.
  */
 SymbolInfo *SymbolTable::lookup(const std::string &name)
 {
@@ -43,9 +32,6 @@ SymbolInfo *SymbolTable::lookup(const std::string &name)
 
 /**
  * @brief Formats the DataType enum into a human-readable string.
- * 
- * @param type The DataType enum value.
- * @return std::string String representation ("int", "float", etc.).
  */
 std::string typeToString(DataType type)
 {
@@ -63,21 +49,21 @@ std::string typeToString(DataType type)
 }
 
 /**
- * @brief Prints the entire symbol table in a formatted grid.
+ * @brief Prints the entire symbol table.
  */
-void SymbolTable::print() const
+void SymbolTable::print(std::ostream& out) const
 {
-    std::cout << "\n================ SYMBOL TABLE ================\n";
-    std::cout << std::left << std::setw(15) << "Identifier"
+    out << "\n================ SYMBOL TABLE ================\n";
+    out << std::left << std::setw(15) << "Identifier"
               << std::setw(15) << "Data Type"
               << "Line Declared\n";
-    std::cout << "----------------------------------------------\n";
+    out << "----------------------------------------------\n";
 
     for (auto const &[name, info] : table)
     {
-        std::cout << std::left << std::setw(15) << name
+        out << std::left << std::setw(15) << name
                   << std::setw(15) << typeToString(info.type)
                   << info.lineDeclared << "\n";
     }
-    std::cout << "==============================================\n";
+    out << "==============================================\n";
 }

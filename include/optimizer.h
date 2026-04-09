@@ -10,24 +10,24 @@ struct Instruction {
     std::string op;
     std::string arg1;
     std::string arg2;
-    std::string label; // For labels like L1:
+    std::string label; 
 
     Instruction(std::string r, std::string o, std::string a1, std::string a2)
         : result(r), op(o), arg1(a1), arg2(a2) {}
     
-    Instruction(std::string l) : label(l) {} // Label constructor
+    Instruction(std::string l) : label(l) {}
 
-    void print() const {
+    void print(std::ostream& out = std::cout) const {
         if (!label.empty()) {
-            std::cout << label << ":\n";
+            out << label << ":\n";
         } else if (op == "=") {
-            std::cout << result << " = " << arg1 << "\n";
+            out << result << " = " << arg1 << "\n";
         } else if (op == "if") {
-            std::cout << "if " << arg1 << " goto " << result << "\n";
+            out << "if " << arg1 << " goto " << result << "\n";
         } else if (op == "goto") {
-            std::cout << "goto " << result << "\n";
+            out << "goto " << result << "\n";
         } else {
-            std::cout << result << " = " << arg1 << " " << op << " " << arg2 << "\n";
+            out << result << " = " << arg1 << " " << op << " " << arg2 << "\n";
         }
     }
 };
@@ -41,7 +41,7 @@ public:
     }
 
     void optimize();
-    void print() const;
+    void print(std::ostream& out = std::cout) const;
 
 private:
     void constantFolding();

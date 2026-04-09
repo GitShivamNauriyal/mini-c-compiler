@@ -5,157 +5,140 @@
  * @brief Helper function to print indentation spaces.
  * 
  * @param indent Number of spaces to print.
+ * @param out Output stream.
  */
-void printIndent(int indent)
+void printIndent(int indent, std::ostream& out)
 {
     for (int i = 0; i < indent; i++)
-        std::cout << " ";
+        out << " ";
 }
 
 /**
  * @brief Prints the BlockNode and all its contained statements.
- * 
- * @param indent Number of spaces to indent for hierarchical display.
  */
-void BlockNode::print(int indent) const
+void BlockNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "Block {\n";
+    printIndent(indent, out);
+    out << "Block {\n";
     for (auto &stmt : statements)
     {
-        stmt->print(indent + 2);
+        stmt->print(indent + 2, out);
     }
-    printIndent(indent);
-    std::cout << "}\n";
+    printIndent(indent, out);
+    out << "}\n";
 }
 
 /**
- * @brief Prints a DeclarationNode, including its type, name, and initialization.
- * 
- * @param indent Number of spaces to indent.
+ * @brief Prints a DeclarationNode.
  */
-void DeclarationNode::print(int indent) const
+void DeclarationNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "Declaration: " << typeToString(type) << " " << identifier << "\n";
+    printIndent(indent, out);
+    out << "Declaration: " << typeToString(type) << " " << identifier << "\n";
     if (initialization)
     {
-        printIndent(indent + 1);
-        std::cout << "Initialized to:\n";
-        initialization->print(indent + 4);
+        printIndent(indent + 1, out);
+        out << "Initialized to:\n";
+        initialization->print(indent + 4, out);
     }
 }
 
 /**
  * @brief Prints an AssignmentNode.
- * 
- * @param indent Number of spaces to indent.
  */
-void AssignmentNode::print(int indent) const
+void AssignmentNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "Assignment: " << identifier << " =\n";
-    expression->print(indent + 4);
+    printIndent(indent, out);
+    out << "Assignment: " << identifier << " =\n";
+    expression->print(indent + 4, out);
 }
 
 /**
- * @brief Prints an IfNode, including its condition, if-block, and optional else-block.
- * 
- * @param indent Number of spaces to indent.
+ * @brief Prints an IfNode.
  */
-void IfNode::print(int indent) const
+void IfNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "If Statement:\n";
-    printIndent(indent + 2);
-    std::cout << "Condition:\n";
-    condition->print(indent + 4);
-    printIndent(indent + 2);
-    std::cout << "If Block:\n";
-    ifBlock->print(indent + 4);
+    printIndent(indent, out);
+    out << "If Statement:\n";
+    printIndent(indent + 2, out);
+    out << "Condition:\n";
+    condition->print(indent + 4, out);
+    printIndent(indent + 2, out);
+    out << "If Block:\n";
+    ifBlock->print(indent + 4, out);
     if (elseBlock)
     {
-        printIndent(indent + 2);
-        std::cout << "Else Block:\n";
-        elseBlock->print(indent + 4);
+        printIndent(indent + 2, out);
+        out << "Else Block:\n";
+        elseBlock->print(indent + 4, out);
     }
 }
 
 /**
  * @brief Prints a WhileNode.
- * 
- * @param indent Number of spaces to indent.
  */
-void WhileNode::print(int indent) const
+void WhileNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "While Statement:\n";
-    printIndent(indent + 2);
-    std::cout << "Condition:\n";
-    condition->print(indent + 4);
-    printIndent(indent + 2);
-    std::cout << "Body:\n";
-    body->print(indent + 4);
+    printIndent(indent, out);
+    out << "While Statement:\n";
+    printIndent(indent + 2, out);
+    out << "Condition:\n";
+    condition->print(indent + 4, out);
+    printIndent(indent + 2, out);
+    out << "Body:\n";
+    body->print(indent + 4, out);
 }
 
 /**
  * @brief Prints a ForNode.
- * 
- * @param indent Number of spaces to indent.
  */
-void ForNode::print(int indent) const
+void ForNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "For Statement:\n";
-    printIndent(indent + 2);
-    std::cout << "Initialization:\n";
-    initialization->print(indent + 4);
-    printIndent(indent + 2);
-    std::cout << "Condition:\n";
-    condition->print(indent + 4);
-    printIndent(indent + 2);
-    std::cout << "Update:\n";
-    update->print(indent + 4);
-    printIndent(indent + 2);
-    std::cout << "Body:\n";
-    body->print(indent + 4);
+    printIndent(indent, out);
+    out << "For Statement:\n";
+    printIndent(indent + 2, out);
+    out << "Initialization:\n";
+    initialization->print(indent + 4, out);
+    printIndent(indent + 2, out);
+    out << "Condition:\n";
+    condition->print(indent + 4, out);
+    printIndent(indent + 2, out);
+    out << "Update:\n";
+    update->print(indent + 4, out);
+    printIndent(indent + 2, out);
+    out << "Body:\n";
+    body->print(indent + 4, out);
 }
 
 /**
- * @brief Prints a BinaryOpNode representing arithmetic or logical operations.
- * 
- * @param indent Number of spaces to indent.
+ * @brief Prints a BinaryOpNode.
  */
-void BinaryOpNode::print(int indent) const
+void BinaryOpNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "BinaryOp: " << op << "\n";
-    printIndent(indent + 1);
-    std::cout << "Left:\n";
-    left->print(indent + 8);
-    printIndent(indent + 1);
-    std::cout << "Right:\n";
-    right->print(indent + 8);
+    printIndent(indent, out);
+    out << "BinaryOp: " << op << "\n";
+    printIndent(indent + 1, out);
+    out << "Left:\n";
+    left->print(indent + 8, out);
+    printIndent(indent + 1, out);
+    out << "Right:\n";
+    right->print(indent + 8, out);
 }
 
 /**
- * @brief Prints a NumberNode (literal integer or float).
- * 
- * @param indent Number of spaces to indent.
+ * @brief Prints a NumberNode.
  */
-void NumberNode::print(int indent) const
+void NumberNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "Number: " << value << " (" << (isFloat ? "float" : "int") << ")\n";
+    printIndent(indent, out);
+    out << "Number: " << value << " (" << (isFloat ? "float" : "int") << ")\n";
 }
 
 /**
- * @brief Prints a VariableNode (identifier usage).
- * 
- * @param indent Number of spaces to indent.
+ * @brief Prints a VariableNode.
  */
-void VariableNode::print(int indent) const
+void VariableNode::print(int indent, std::ostream& out) const
 {
-    printIndent(indent);
-    std::cout << "Variable: " << name << "\n";
+    printIndent(indent, out);
+    out << "Variable: " << name << "\n";
 }

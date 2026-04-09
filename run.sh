@@ -34,7 +34,7 @@ run_test_dir() {
     for file in "$dir"/*.c; do
         if [ -f "$file" ]; then
             $COMPILER $opt_flag "$file" > /tmp/minic_out 2>&1
-            if grep -q "\-\-\- Compilation Finished Successfully \-\-\-" /tmp/minic_out; then
+            if grep -q "Artifacts saved in 'output/'" /tmp/minic_out; then
                 actual="SUCCESS"
             else
                 actual="FAILED"

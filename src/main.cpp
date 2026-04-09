@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <vector>
 #include <string>
@@ -13,14 +14,7 @@ extern ASTNodePtr ast_root;
 /**
  * @brief Entry point for the Mini-C compiler.
  * 
- * Orchestrates the compilation phases: Lexical analysis, Syntax analysis, 
- * Semantic analysis, and Intermediate Code Generation with optimization.
- * 
- * Supports -O0 (no optimization) and -O1 (optimization enabled, default).
- * 
- * @param argc Argument count.
- * @param argv Argument vector.
- * @return int Exit status (0 for success, non-zero for errors).
+ * Orchestrates compilation and saves intermediate artifacts to the 'output/' directory.
  */
 int main(int argc, char **argv)
 {
@@ -30,18 +24,9 @@ int main(int argc, char **argv)
     for (int i = 1; i < argc; i++)
     {
         std::string arg = argv[i];
-        if (arg == "-O0")
-        {
-            optimize = false;
-        }
-        else if (arg == "-O1")
-        {
-            optimize = true;
-        }
-        else if (arg[0] != '-')
-        {
-            fileName = arg;
-        }
+        if (arg == "-O0") optimize = false;
+        else if (arg == "-O1") optimize = true;
+        else if (arg[0] != '-') fileName = arg;
     }
 
     if (!fileName.empty())
@@ -53,41 +38,55 @@ int main(int argc, char **argv)
             return 1;
         }
         yyin = file;
-        std::cout << "\n--- Compiling file: " << fileName << " (Optimization: " << (optimize ? "ON" : "OFF") << ") ---\n";
+        std::cout << "\n--- Compiling: " << fileName << " (Optimization: " << (optimize ? "ON" : "OFF") << ") ---\n";
     }
 
     if (yyparse() == 0)
     {
-        std::cout << "[SUCCESS] Lexical Analysis completed.\n";
-        std::cout << "[SUCCESS] Syntax Analysis completed.\n";
+        std::cout << "[SUCCESS] Lexical & Syntax Analysis.\n";
 
         if (ast_root)
         {
-            std::cout << "\n================ ABSTRACT SYNTAX TREE ================\n";
-            ast_root->print();
-            std::cout << "======================================================\n";
+            // 1. Save AST
+            std::ofstream astFile("output/ast.txt");
+            ast_root->print(0, astFile);
+            astFile.close();
 
             SemanticAnalyzer semantic_analyzer;
             if (semantic_analyzer.analyze(ast_root))
             {
-                std::cout << "\n[SUCCESS] Semantic Analysis completed.\n";
-                semantic_analyzer.printSymbolTable();
+                std::cout << "[SUCCESS] Semantic Analysis.\n";
 
-                std::cout << "[SUCCESS] Generating Intermediate Code...\n";
+                // 2. Save Symbol Table
+                std::ofstream symFile("output/symbol_table.txt");
+                semantic_analyzer.printSymbolTable(symFile);
+                symFile.close();
+
+                std::cout << "[SUCCESS] Generating Code...\n";
                 CodeGenerator codegen;
-                codegen.generate(ast_root, optimize);
+                
+                // 3. Save TAC and MIPS
+                std::ofstream tacFile("output/tac.txt");
+                std::ofstream optTacFile("output/tac_optimized.txt");
+                std::ofstream mipsFile("output/mips.asm");
 
-                std::cout << "--- Compilation Finished Successfully ---\n\n";
+                codegen.generate(ast_root, optimize, tacFile, optTacFile, mipsFile);
+
+                tacFile.close();
+                optTacFile.close();
+                mipsFile.close();
+
+                std::cout << "--- Compilation Finished. Artifacts saved in 'output/' ---\n\n";
             }
             else
             {
-                std::cout << "\n[FAILED] Compilation halted due to semantic errors.\n\n";
+                std::cout << "\n[FAILED] Semantic errors detected.\n\n";
             }
         }
     }
     else
     {
-        std::cout << "[FAILED] Compilation halted due to syntax/lexical errors.\n\n";
+        std::cout << "[FAILED] Syntax/Lexical errors detected.\n\n";
     }
 
     return 0;

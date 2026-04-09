@@ -5,6 +5,7 @@
 #include "symbol_table.h"
 #include <memory>
 #include <string>
+#include <iostream>
 
 class SemanticAnalyzer
 {
@@ -21,7 +22,7 @@ private:
 public:
     bool analyze(ASTNodePtr root);
 
-    void printSymbolTable() { symTab.print(); }
+    void printSymbolTable(std::ostream& out = std::cout) { symTab.print(out); }
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <iostream>
 
 enum DataType
 {
@@ -31,7 +32,7 @@ public:
     bool exists(const std::string &name);
     bool insert(const std::string &name, DataType type, int line);
     SymbolInfo *lookup(const std::string &name);
-    void print() const;
+    void print(std::ostream& out = std::cout) const;
 };
 
 #endif

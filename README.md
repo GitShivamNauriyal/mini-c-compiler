@@ -67,7 +67,7 @@ The `run.sh` script is the primary way to interact with the project. It handles 
     ```
 4.  **Compile a Specific File:** Runs the compiler on a single source file.
     ```bash
-    ./run.sh tests/valid/test1.c -O1  # Run with optimization
+    ./run.sh tests/valid/test1.c -O1 
     ```
 
 ## 📂 Output Artifacts

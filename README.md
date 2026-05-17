@@ -5,8 +5,8 @@ A multi-phase compiler for a subset of the C programming language, built from sc
 ## Overview
 This project demonstrates the complete pipeline of compiler construction, translating high-level C-subset source code into Intermediate Representation (IR) and finally to MIPS32 assembly. It includes robust error handling for both syntax and semantic logic, along with an optimization engine.
 
-## Current Status: Phase 5 Completed (Assembly Generation)
-The compiler currently scans tokens, validates grammar, constructs an AST, performs semantic checks, generates optimized Three-Address Code (TAC), and produces functional MIPS32 assembly.
+## Project Status: Completed (Final Integration)
+The compiler has reached its final development phase, successfully implementing the entire pipeline from source code to executable MIPS assembly.
 
 ### Implemented Features
 *   **Lexical & Syntax Analysis:** Handles keywords, identifiers, literals, arithmetic, and control flow.
@@ -32,6 +32,14 @@ The compiler implements several IR-level optimizations:
 *   **Common Subexpression Elimination (CSE):** Reuses results of redundant calculations (e.g., `a + b` calculated once).
 *   **Loop-Invariant Code Motion (LICM):** Moves calculations that don't change inside a loop to the outside.
 
+## 🚀 Future Roadmap
+While the core compiler pipeline is complete, the following areas are identified for potential future development:
+1.  **Arrays & Pointers:** Implementation of array indexing and pointer arithmetic for more complex data structures.
+2.  **Function Support:** Support for function declarations, recursive calls, and proper stack frame management.
+3.  **Advanced Register Allocation:** Shifting from a stack-based MIPS generation to an optimized register allocation strategy (e.g., Graph Coloring).
+4.  **Standard Library Integration:** Adding built-in syscall wrappers for I/O operations like `print_int` or `read_char`.
+5.  **Enhanced Error Recovery:** Improving parser resilience to report multiple errors in a single pass using Bison's error-handling tokens.
+
 ## Technology Stack
 *   **Language:** C++17
 *   **Tools:** Flex, Bison (GNU), GNU Make
@@ -52,7 +60,7 @@ sudo apt install flex bison build-essential g++ make
 ```
 
 ### Usage (run.sh)
-The `run.sh` script is the primary way to interact with the project. It handles terminal colors and provides several flags:
+The `run.sh` script is the primary way to interact with the project:
 
 1.  **Build and Test All:** Compiles the project and runs all valid/error test cases with `-O1`.
     ```bash
@@ -61,13 +69,9 @@ The `run.sh` script is the primary way to interact with the project. It handles 
 2.  **Run Tests with Flags:**
     *   `./run.sh -t`: Runs tests with optimization ON.
     *   `./run.sh --test-no-opt`: Runs tests with optimization OFF.
-3.  **Clean and Build:** Performs a fresh cleanup and recompiles the compiler.
+3.  **Compile a Specific File:** Runs the compiler on a single source file.
     ```bash
-    ./run.sh -c
-    ```
-4.  **Compile a Specific File:** Runs the compiler on a single source file.
-    ```bash
-    ./run.sh tests/valid/test1.c -O1 
+    ./run.sh tests/valid/test1.c -O1
     ```
 
 ## 📂 Output Artifacts
@@ -76,7 +80,7 @@ After a successful compilation, the `output/` directory contains:
 *   `symbol_table.txt`: Table of all identifiers and their types.
 *   `tac.txt`: Raw Three-Address Code.
 *   `tac_optimized.txt`: The IR after optimization passes.
-*   `mips.asm`: The final MIPS32 assembly code (can be run in **MARS** or **SPIM**).
+*   `mips.asm`: The final MIPS32 assembly code (compatible with **MARS** or **SPIM**).
 
 ## 👨‍💻 Author
 *   🗿 Shivam Nauriyal

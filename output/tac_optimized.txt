@@ -1,23 +1,26 @@
 ================ OPTIMIZED THREE-ADDRESS CODE ================
-x = 10
-y = 3.140000
-t1 = 10 == 10
-if t1 goto L1
-goto L3
+n = 15
+first = 0
+second = 1
+c = 0
+t1 = 0 < 15
+t2 = 0 <= 1
+next = 0
+next = 1
+first = 1
+second = 0
+c = 1
 L1:
-x = 20
-goto L2
-L3:
-y = 0.000000
+if t1 goto L2
+goto L3
 L2:
-t2 = 20 > 0
-x = 19
-L4:
-if t2 goto L5
+if t2 goto L4
 goto L6
-L5:
-goto L4
+L4:
+goto L5
 L6:
-z = 10
+L5:
+goto L1
+L3:
 ==============================================================
 

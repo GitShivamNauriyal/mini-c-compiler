@@ -1,15 +1,58 @@
 Block {
-  Declaration: int count
+  Declaration: int n
    Initialized to:
-      Number: 5 (int)
-  Declaration: float weight
+      Number: 15 (int)
+  Declaration: int first
    Initialized to:
-      Number: 150.500000 (float)
-  Assignment: count =
-      Number: 10.500000 (float)
-  Assignment: weight =
-      Variable: count
-  Declaration: int age
+      Number: 0 (int)
+  Declaration: int second
    Initialized to:
-      Number: 25.500000 (float)
+      Number: 1 (int)
+  Declaration: int next
+  Declaration: int c
+  For Statement:
+    Initialization:
+      Assignment: c =
+          Number: 0 (int)
+    Condition:
+      BinaryOp: <
+       Left:
+              Variable: c
+       Right:
+              Variable: n
+    Update:
+      Assignment: c =
+          BinaryOp: +
+           Left:
+                  Variable: c
+           Right:
+                  Number: 1 (int)
+    Body:
+      Block {
+        If Statement:
+          Condition:
+            BinaryOp: <=
+             Left:
+                    Variable: c
+             Right:
+                    Number: 1 (int)
+          If Block:
+            Block {
+              Assignment: next =
+                  Variable: c
+            }
+          Else Block:
+            Block {
+              Assignment: next =
+                  BinaryOp: +
+                   Left:
+                          Variable: first
+                   Right:
+                          Variable: second
+              Assignment: first =
+                  Variable: second
+              Assignment: second =
+                  Variable: next
+            }
+      }
 }
